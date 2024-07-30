@@ -1,6 +1,6 @@
 import rulesets
 from agent import Agent
-from config import BLACK, WHITE, RED, BLUE, GREEN, WIDTH, HEIGHT, BLOCK_SIZE, agent_type
+from config import BLACK, WHITE, RED, BLUE, GREEN, YELLOW, CYAN, MAGENTA, WIDTH, HEIGHT, BLOCK_SIZE, agent_type, FPS_MIN, FPS_MAX, FPS_DEFAULT
 '''
 Overview: 
 This code attempts to reproduce interesting 2D patterns created by social wasp species 
@@ -52,7 +52,7 @@ pygame.init()
 
 # Screen dimensions
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Wasp nest building process")
+pygame.display.set_caption(f"Construction by {agent_type} wasp species")
 
 # Initialize grid with intial cell properties
 cell_properties = {}
@@ -64,7 +64,6 @@ for x in range(0, WIDTH, BLOCK_SIZE):
 
 # Set the ruleset
 ruleset = rulesets.rulesets[agent_type]
-
 # Initialize agents
 agents = [Agent(random.randrange(0, WIDTH, BLOCK_SIZE), random.randrange(0, HEIGHT, BLOCK_SIZE), BLOCK_SIZE / 2, ruleset, cell_properties) for _ in range(10)]
 
@@ -81,7 +80,7 @@ while running:
     # 2. Update grid - cell properties and agents
     for x in range(0, WIDTH, BLOCK_SIZE):
         for y in range(0, HEIGHT, BLOCK_SIZE):
-            colors = [WHITE, BLUE, GREEN]
+            colors = [WHITE, BLUE, GREEN, YELLOW, CYAN, MAGENTA]
             rect = pygame.Rect(x, y, BLOCK_SIZE, BLOCK_SIZE)
             pygame.draw.rect(SCREEN, colors[cell_properties[(x, y)]], rect, 0)
     for agent in agents:

@@ -35,16 +35,27 @@ class Agent:
                 neighborhood_properties.append(self.cell_properties[(x, y)])
         return neighborhood_properties
     
+    def _make_symmetric(self, neighborhood_properties):
+        neighborhood_properties_list = []
+        extended_list = neighborhood_properties + neighborhood_properties
+        for i in range(len(neighborhood_properties)):
+            permut = extended_list[i:i + len(neighborhood_properties)]
+            neighborhood_properties_list.append(permut)
+        return neighborhood_properties_list
+    
     def build(self):
         # Fetch neighborhood properties
         neighborhood_properties = self.__get_neighborhood_properties((self.x, self.y))
+        # Get all possible permutations enforcing symmetry
+        neighborhood_properties_list = self._make_symmetric(neighborhood_properties)
         # get current cell property
         cell_property = self.cell_properties[(self.x, self.y)]
 
         # Compare with ruleset and set property
         for rule in self.ruleset:
-            if cell_property == 0 and list(rule[0]) == neighborhood_properties:
+            if cell_property == 0 and list(rule[0]) in neighborhood_properties_list:
                 self.cell_properties[(self.x, self.y)] = rule[1]
+                break # Only accept the first applicable rule when multiple satisfies
 
     def move(self):
         direction = random.choice([(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)])
@@ -69,3 +80,9 @@ class Agent:
 
     def draw(self, surface):
         pygame.draw.circle(surface, self.color, (int(self.x), int(self.y)), self.radius)
+        # Insert wasp icon for clarity
+        # img = pygame.image.load('wasp_icon.jpg')
+        # img = pygame.transform.scale(img, (self.radius * 2, self.radius * 2))
+        # Blit image onto circle
+        # img_rect = img.get_rect(center = (self.x, self.y))
+        # surface.blit(img, img_rect)
